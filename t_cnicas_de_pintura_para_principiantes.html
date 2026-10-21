@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PintArte - Descubre las Técnicas de Pintura</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            lavender: '#E6E6FA',
+                            lavenderDark: '#D8D8F6',
+                            sage: '#E0ECE4',
+                            sageDark: '#C8DDD0',
+                            peach: '#FFE5D9',
+                            peachDark: '#FFD0BC',
+                            cream: '#FFF9F0',
+                            sky: '#E1F1FF',
+                            skyDark: '#C2E2FF',
+                            rose: '#FAD2E1',
+                            text: '#4A4E69',
+                            darkBg: '#1D1E2C',
+                            darkCard: '#27293D',
+                            darkText: '#E2E8F0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fonts Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Hide scrollbars for clean horizontal scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Custom subtle shadows */
+        .soft-shadow {
+            box-shadow: 0 10px 30px -10px rgba(74, 78, 105, 0.08);
+        }
+        .soft-shadow-hover {
+            transition: all 0.3s ease;
+        }
+        .soft-shadow-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px -10px rgba(74, 78, 105, 0.15);
+        }
+        /* Canvas cursor customization */
+        .canvas-container canvas {
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="bg-pastel-cream text-pastel-text dark:bg-pastel-darkBg dark:text-pastel-darkText min-h-screen pb-20 md:pb-0 selection:bg-pastel-peach">
+
+    <!-- Header / Navbar Desktop & Header Mobile -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/70 dark:bg-pastel-darkBg/80 border-b border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pastel-peach via-pastel-rose to-pastel-lavender flex items-center justify-center text-pastel-text shadow-sm">
+                    <i class="fa-solid font-bold fa-palette text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-serif text-xl font-bold tracking-tight text-gray-800 dark:text-white">Pint<span class="text-pink-400 font-normal">Arte</span></span>
+                    <span class="block text-[10px] text-gray-400 tracking-wider uppercase -mt-1 font-semibold">Técnicas Básicas</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="#inicio" class="hover:text-pink-500 transition-colors">Inicio</a>
+                <a href="#tecnicas" class="hover:text-pink-500 transition-colors">Técnicas</a>
+                <a href="#simulador" class="hover:text-pink-500 transition-colors">Lienzo Virtual</a>
+                <a href="#glosario" class="hover:text-pink-500 transition-colors">Glosario</a>
+                <a href="#comunidad" class="hover:text-pink-500 transition-colors">Comunidad</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" aria-label="Cambiar tema" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-amber-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+                <a href="#simulador" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full bg-pastel-rose hover:bg-pink-200 text-gray-800 transition-all shadow-sm">
+                    <i class="fa-solid fa-paintbrush"></i> Probar Lienzo
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar for Mobile (Bottom fixed) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-pastel-darkCard/95 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-800 px-3 py-2 flex justify-around items-center text-xs font-medium text-gray-500 dark:text-gray-400">
+        <a href="#inicio" class="flex flex-col items-center gap-1 p-1 hover:text-pink-500 active:text-pink-500 transition-colors">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#tecnicas" class="flex flex-col items-center gap-1 p-1 hover:text-pink-500 active:text-pink-500 transition-colors">
+            <i class="fa-solid fa-layer-group text-lg"></i>
+            <span>Técnicas</span>
+        </a>
+        <a href="#simulador" class="flex flex-col items-center gap-1 p-1 text-pink-500 dark:text-pink-400 font-semibold">
+            <div class="w-10 h-10 -mt-5 rounded-full bg-gradient-to-tr from-pastel-peach to-pastel-rose flex items-center justify-center text-gray-800 shadow-md border-2 border-white dark:border-gray-900">
+                <i class="fa-solid fa-paintbrush text-sm"></i>
+            </div>
+            <span>Lienzo</span>
+        </a>
+        <a href="#glosario" class="flex flex-col items-center gap-1 p-1 hover:text-pink-500 active:text-pink-500 transition-colors">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span>Glosario</span>
+        </a>
+        <a href="#comunidad" class="flex flex-col items-center gap-1 p-1 hover:text-pink-500 active:text-pink-500 transition-colors">
+            <i class="fa-solid fa-comments text-lg"></i>
+            <span>Comunidad</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-16">
+
+        <!-- HERO SECTION -->
+        <section id="inicio" class="relative pt-6 pb-10 rounded-3xl bg-gradient-to-br from-pastel-sky/60 via-pastel-lavender/50 to-pastel-peach/40 dark:from-gray-800/60 dark:via-gray-800/40 dark:to-gray-900/40 p-6 md:p-12 overflow-hidden soft-shadow">
+            <!-- Background decorative soft circles -->
+            <div class="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-pastel-rose/30 blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-pastel-sky/40 blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-2xl mx-auto text-center space-y-4">
+                <span class="inline-block px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-gray-800/80 text-xs font-semibold text-gray-700 dark:text-gray-300 shadow-sm border border-white/40">
+                    ✨ Guía amigable para mentes creativas
+                </span>
+                <h1 class="font-serif text-3xl md:text-5xl font-bold tracking-tight text-gray-800 dark:text-white leading-tight">
+                    El arte de pintar empieza sin miedo al lienzo en blanco.
+                </h1>
+                <p class="text-sm md:text-base text-gray-600 dark:text-gray-300 leading-relaxed font-light">
+                    Aprende las técnicas esenciales paso a paso, explora materiales básicos y experimenta con trazos digitales antes de tomar tu primer pincel real.
+                </p>
+                <div class="pt-3 flex flex-wrap justify-center gap-3">
+                    <a href="#tecnicas" class="px-6 py-3 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-gray-900 text-sm font-medium hover:opacity-90 transition-all shadow-md flex items-center gap-2">
+                        <span>Explorar Técnicas</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                    <a href="#simulador" class="px-6 py-3 rounded-2xl bg-white/80 dark:bg-gray-800 text-gray-800 dark:text-white text-sm font-medium hover:bg-white transition-all shadow-sm border border-gray-200 dark:border-gray-700">
+                        Probar Lienzo Interactivo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPLORADOR DE TÉCNICAS -->
+        <section id="tecnicas" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold tracking-widest text-pink-500 uppercase">Catálogo Práctico</span>
+                    <h2 class="font-serif text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Técnicas de Pintura</h2>
+                </div>
+                <!-- Filtros -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                    <button class="filter-btn active px-4 py-2 rounded-2xl text-xs font-semibold transition-all bg-gray-900 text-white dark:bg-white dark:text-gray-900 shadow-sm whitespace-nowrap" data-filter="all">
+                        Todas
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-2xl text-xs font-semibold transition-all bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 border border-gray-200 dark:border-gray-700 whitespace-nowrap" data-filter="agua">
+                        Base Agua
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-2xl text-xs font-semibold transition-all bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 border border-gray-200 dark:border-gray-700 whitespace-nowrap" data-filter="aceite">
+                        Base Aceite
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-2xl text-xs font-semibold transition-all bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 border border-gray-200 dark:border-gray-700 whitespace-nowrap" data-filter="seco">
+                        Secas / Mixtas
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid de Técnicas -->
+            <div id="techniquesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se cargan dinámicamente mediante JS -->
+            </div>
+        </section>
+
+        <!-- LIENZO INTERACTIVO DE PRÁCTICA (CANVAS SIMULATOR) -->
+        <section id="simulador" class="space-y-6 pt-4">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="px-3 py-1 rounded-full bg-pastel-peach/80 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-peach">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Experimentación Sin Miedo
+                </span>
+                <h2 class="font-serif text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Lienzo Virtual de Práctica</h2>
+                <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Prueba cómo responden diferentes trazos, colores pastel y densidades antes de ir al papel real.</p>
+            </div>
+
+            <div class="bg-white dark:bg-pastel-darkCard rounded-3xl p-4 md:p-6 soft-shadow border border-gray-100 dark:border-gray-800 space-y-4">
+                <!-- Toolbar de Canvas -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-gray-100 dark:border-gray-800 text-xs">
+                    <!-- Selector de Pincel / Estilo -->
+                    <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800 p-1 rounded-2xl">
+                        <button id="brushWatercolor" class="brush-type-btn active px-3 py-1.5 rounded-xl font-medium transition-all bg-white dark:bg-gray-700 shadow-sm text-gray-800 dark:text-white" title="Efecto acuarela traslúcida">
+                            <i class="fa-solid fa-droplet text-blue-400 mr-1"></i> Acuarela
+                        </button>
+                        <button id="brushAcrylic" class="brush-type-btn px-3 py-1.5 rounded-xl font-medium transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800" title="Opaco y cubriente">
+                            <i class="fa-solid fa-paintbrush text-amber-500 mr-1"></i> Acrílico
+                        </button>
+                        <button id="brushPastel" class="brush-type-btn px-3 py-1.5 rounded-xl font-medium transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800" title="Textura suave de tiza">
+                            <i class="fa-solid fa-chalk-hardware text-purple-400 mr-1"></i> Pastel
+                        </button>
+                    </div>
+
+                    <!-- Paleta de Colores Pastel -->
+                    <div class="flex items-center gap-2 overflow-x-auto py-1">
+                        <span class="text-gray-400 text-[11px] font-medium hidden sm:inline">Color:</span>
+                        <div id="colorPalette" class="flex items-center gap-1.5">
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#E6E6FA] ring-2 ring-offset-2 ring-purple-400 transition-transform" data-color="#E6E6FA"></button>
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#FFE5D9] transition-transform" data-color="#FFE5D9"></button>
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#E0ECE4] transition-transform" data-color="#E0ECE4"></button>
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#E1F1FF] transition-transform" data-color="#E1F1FF"></button>
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#FAD2E1] transition-transform" data-color="#FAD2E1"></button>
+                            <button class="color-dot w-7 h-7 rounded-full bg-[#4A4E69] transition-transform" data-color="#4A4E69"></button>
+                            <!-- Input picker libre -->
+                            <label class="w-7 h-7 rounded-full bg-gradient-to-tr from-yellow-200 via-pink-200 to-blue-200 flex items-center justify-center cursor-pointer border border-gray-300 dark:border-gray-600 text-[10px]" title="Color personalizado">
+                                <i class="fa-solid fa-plus text-gray-600"></i>
+                                <input type="color" id="customColorPicker" class="sr-only" value="#E6E6FA">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Tamaño & Acciones -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-2xl">
+                            <i class="fa-solid fa-circle text-[8px] text-gray-400"></i>
+                            <input type="range" id="brushSize" min="5" max="50" value="20" class="w-16 accent-pink-400 cursor-pointer">
+                            <i class="fa-solid fa-circle text-xs text-gray-400"></i>
+                        </div>
+
+                        <button id="clearCanvas" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300 font-medium transition-colors" title="Limpiar todo">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Area -->
+                <div class="canvas-container relative w-full h-80 md:h-96 rounded-2xl overflow-hidden bg-stone-50 dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center">
+                    <canvas id="paintCanvas" class="w-full h-full cursor-crosshair"></canvas>
+                    <div id="canvasPlaceholderHint" class="absolute pointer-events-none text-center text-gray-400 dark:text-gray-600 p-4 transition-opacity duration-300">
+                        <i class="fa-solid fa-hand-pointer text-2xl mb-2 opacity-50"></i>
+                        <p class="text-xs">Mueve el mouse o dibuja con el dedo aquí para experimentar</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GLOSARIO Y PREGUNTAS FRECUENTES -->
+        <section id="glosario" class="space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs font-bold tracking-widest text-pink-500 uppercase">Vocabulario del Artista</span>
+                <h2 class="font-serif text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">Glosario para Principiantes</h2>
+                <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Términos frecuentes que escucharás en talleres y tutoriales explicados de forma muy sencilla.</p>
+            </div>
+
+            <!-- Buscador -->
+            <div class="max-w-md mx-auto relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="glossarySearch" placeholder="Buscar término (ej. Glaseado, Impasto, Wet on wet)..." class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white dark:bg-pastel-darkCard border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 soft-shadow transition-all">
+            </div>
+
+            <!-- Lista de Términos (Accordion / Grid) -->
+            <div id="glossaryList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- JS renderiza el glosario -->
+            </div>
+        </section>
+
+        <!-- COMUNIDAD E INSPIRACIÓN -->
+        <section id="comunidad" class="rounded-3xl bg-gradient-to-r from-pastel-sage/50 via-pastel-sky/50 to-pastel-lavender/50 dark:from-gray-800 dark:to-gray-800/80 p-6 md:p-10 soft-shadow space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h2 class="font-serif text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">¿Tienes dudas o quieres compartir tus avances?</h2>
+                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300">Formamos un grupo entusiasta de aprendizaje. Envíanos tu inquietud o una foto de tu práctica para darte retroalimentación amigable.</p>
+            </div>
+
+            <form id="communityForm" class="max-w-lg mx-auto space-y-3 bg-white/80 dark:bg-gray-900/80 p-5 rounded-2xl backdrop-blur-sm border border-white/60 dark:border-gray-800">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-gray-600 dark:text-gray-300">Tu Nombre</label>
+                        <input type="text" required placeholder="Ej. Lucía Pérez" class="w-full px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-gray-600 dark:text-gray-300">Técnica que practicas</label>
+                        <select class="w-full px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <option>Acuarela</option>
+                            <option>Acrílico</option>
+                            <option>Óleo</option>
+                            <option>Gouache</option>
+                            <option>Pastel Seco</option>
+                            <option>Otra</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1 text-gray-600 dark:text-gray-300">Mensaje o Inquietud</label>
+                    <textarea rows="3" required placeholder="Cuéntanos en qué estás trabajando o qué técnica te cuesta más trabajo..." class="w-full px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-gray-900 font-semibold text-xs hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje a la Comunidad
+                </button>
+            </form>
+            <div id="formSuccessMessage" class="hidden text-center text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 py-2 rounded-xl">
+                ¡Gracias por sumarte! Te responderemos muy pronto con consejos útiles.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-16 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8 text-center text-xs text-gray-400">
+        <div class="max-w-6xl mx-auto px-4 space-y-3">
+            <div class="flex items-center justify-center gap-2 font-serif text-base text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-palette text-pink-400"></i> PintArte
+            </div>
+            <p>Espacio educativo creado con ❤️ para acercar el arte visual a nuevos pintores.</p>
+            <p>© 2026 PintArte - Guía de Técnicas para Principiantes</p>
+        </div>
+    </footer>
+
+    <!-- MODAL DETALLE DE TÉCNICA -->
+    <div id="techniqueModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-pastel-darkCard w-full max-w-2xl rounded-3xl p-6 md:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto soft-shadow my-auto">
+            <button id="closeModalBtn" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-gray-800 dark:hover:text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="modalContent" class="space-y-6">
+                <!-- Se inyecta dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- BASE DE DATOS DE TÉCNICAS DE PINTURA ---
+        const techniquesData = [
+            {
+                id: 'acuarela',
+                title: 'Acuarela',
+                category: 'agua',
+                difficulty: 'Fácil - Intermedio',
+                difficultyBg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+                colorPastel: 'bg-pastel-sky/60',
+                icon: 'fa-droplet',
+                shortDesc: 'Pintura ligera a base de agua, célebre por sus transparencias y luminosidad natural.',
+                materials: ['Papel de acuarela (mínimo 300g/m²)', 'Pinceles de pelo suave (redondos)', 'Acuarelas en pastilla o tubo', '2 frascos con agua limpia', 'Papel absorbente'],
+                steps: [
+                    { title: '1. Preparación del papel', desc: 'Fija el papel a una tabla firme con cinta de enmascarar para evitar que se curve al humedecerse.' },
+                    { title: '2. Técnica Humedo sobre Humedo (Wet on Wet)', desc: 'Moja la zona del papel con agua limpia antes de aplicar el pigmento para lograr bordes suaves y difuminados.' },
+                    { title: '3. Transparencias por capas', desc: 'Aplica primero los colores más claros. Deja secar antes de colocar sombras o capas superpuestas.' }
+                ],
+                goldTip: 'El blanco en acuarela suele ser el propio papel brillante. ¡Conserva las áreas blancas libres de pintura!'
+            },
+            {
+                id: 'acrilico',
+                title: 'Pintura Acrílica',
+                category: 'agua',
+                difficulty: 'Muy Fácil',
+                difficultyBg: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300',
+                colorPastel: 'bg-pastel-peach/60',
+                icon: 'fa-paintbrush',
+                shortDesc: 'Muy versátil, seca velozmente y se limpia fácilmente con agua. La favorita para iniciar.',
+                materials: ['Pinturas acrílicas básicas', 'Lienzo, cartón entelado o papel grueso', 'Pinceles sintéticos (planos y redondos)', 'Paleta para mezclar', 'Vaso con agua'],
+                steps: [
+                    { title: '1. Boceto básico', desc: 'Dibuja suavemente con lápiz grafito o una aguada ligera de pintura el esquema de tu trabajo.' },
+                    { title: '2. Bloqueo de grandes masas', desc: 'Pinta primero los fondos y bloques de color grandes antes de concentrarte en los detalles minuciosos.' },
+                    { title: '3. Empasto y detalles', desc: 'Como el acrílico seca rápido, puedes pintar capas opacas encima corrigiendo cualquier error fácilmente.' }
+                ],
+                goldTip: 'Conserva un pulverizador con agua para rociar suavemente tu paleta y evitar que las pinturas se sequen rápido.'
+            },
+            {
+                id: 'oleo',
+                title: 'Óleo Tradicional',
+                category: 'aceite',
+                difficulty: 'Intermedio',
+                difficultyBg: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+                colorPastel: 'bg-pastel-rose/60',
+                icon: 'fa-palette',
+                shortDesc: 'A base de aceites vegetales. Permite mezclas sumamente suaves gracias a su secado lento.',
+                materials: ['Óleos en tubo', 'Aceite de linaza y solvente sin olor (Gamsol/Odourless)', 'Lienzo imprimado con Gesso', 'Pinceles de cerda dura o sintéticos firmes', 'Espátula'],
+                steps: [
+                    { title: '1. Regla de "Graso sobre Magro"', desc: 'Aplica capas iniciales delgadas con poco aceite, y en las capas superiores agrega más contenido de aceite de linaza.' },
+                    { title: '2. Transiciones suaves', desc: 'Aprovecha que la pintura se mantiene húmeda durante horas para difuminar bordes con un pincel limpio y seco.' },
+                    { title: '3. Secado y barnizado', desc: 'Deja secar tu obra en un lugar ventilado durante semanas antes de aplicar un barniz protector.' }
+                ],
+                goldTip: 'Limpia tus pinceles primero retirando el exceso con un trapo, luego usa un poco de jabón neutro y agua tibia.'
+            },
+            {
+                id: 'gouache',
+                title: 'Gouache (Témpera Profesional)',
+                category: 'agua',
+                difficulty: 'Fácil',
+                difficultyBg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+                colorPastel: 'bg-pastel-sage/60',
+                icon: 'fa-eye-dropper',
+                shortDesc: 'Similar a la acuarela pero opaca y mate. Permite ilustraciones con gran viveza gráfica.',
+                materials: ['Tubos de Gouache', 'Papel de acuarela o ilustración', 'Pinceles suaves o mixtos', 'Paleta hermética'],
+                steps: [
+                    { title: '1. Consistencia correcta', desc: 'Mezcla la pintura con gotas de agua hasta lograr la textura de una crema líquida uniforme.' },
+                    { title: '2. Capas mate y planas', desc: 'Aplica pinceladas firmes en una sola dirección para lograr bloques de color aterciopelados.' },
+                    { title: '3. Reactivación', desc: 'Si la pintura en tu paleta se seca, basta con agregar una gota de agua para volver a utilizarla.' }
+                ],
+                goldTip: 'Evita aplicar capas excesivamente gruesas de Gouache puro, ya que podría agrietarse al secar completamente.'
+            },
+            {
+                id: 'pastel-seco',
+                title: 'Pastel Seco (Tizas)',
+                category: 'seco',
+                difficulty: 'Fácil',
+                difficultyBg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+                colorPastel: 'bg-pastel-lavender/60',
+                icon: 'fa-cubes',
+                shortDesc: 'Pigmento casi puro en barra. Se aplica directamente con las manos creando difuminados poéticos.',
+                materials: ['Barras de Pastel seco', 'Papel rugoso especial para pastel (Canson Mi-Teintes)', 'Difuminadores o esfuminos', 'Fijador en aerosol'],
+                steps: [
+                    { title: '1. Aplicación directa', desc: 'Usa el borde plano de la tiza para cubrir grandes fondos o la punta para líneas marcadas.' },
+                    { title: '2. Difuminado manual', desc: 'Usa la yema de los dedos o un esfumino de papel para integrar los colores suavemente.' },
+                    { title: '3. Fijación final', desc: 'Aplica fijador a distancia moderada para evitar que el polvo de pigmento se desprenda.' }
+                ],
+                goldTip: 'Usa papel de color neutro o gris en vez de blanco puro para resaltar luces intensas y sombras profundas.'
+            },
+            {
+                id: 'tecnica-mixta',
+                title: 'Técnica Mixta (Mixed Media)',
+                category: 'seco',
+                difficulty: 'Fácil - Abierto',
+                difficultyBg: 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300',
+                colorPastel: 'bg-pastel-sky/60',
+                icon: 'fa-layer-group',
+                shortDesc: 'Combina acrílicos, lápices de colores, tintas y ceras sin límites ni reglas rígidas.',
+                materials: ['Soporte de gran gramaje', 'Pinturas base acuosa', 'Lápices marcadores, crayones, colash'],
+                steps: [
+                    { title: '1. Capa de fondo permeable', desc: 'Crea una mancha de color inicial usando acuarelas o acrílicos muy diluidos.' },
+                    { title: '2. Texturas y capas secas', desc: 'Agrega grafito, pasteles o collage de papel una vez que la base esté completamente seca.' },
+                    { title: '3. Sellado final', desc: 'Consolida la obra aplicando un barniz protector en aerosol uniforme.' }
+                ],
+                goldTip: 'Respeta la compatibilidad: siempre aplica pinturas solubles en agua antes que productos grasos o ceras.'
+            }
+        ];
+
+        // --- BASE DE DATOS DE GLOSARIO ---
+        const glossaryData = [
+            { term: 'Glaseado (Glaze)', desc: 'Capa muy delgada y transparente de pintura que se aplica sobre una capa ya seca para modificar su tono sin cubrir el dibujo inferior.' },
+            { term: 'Impasto (Empaste)', desc: 'Técnica donde la pintura se aplica muy espesa en el lienzo (con espátula o pincel grueso), dejando marcas visibles y volumen tridimensional.' },
+            { term: 'Wet-on-Wet (Húmedo sobre Húmedo)', desc: 'Pintar con pigmento húmedo directamente sobre una superficie que también está húmeda, permitiendo fundidos orgánicos.' },
+            { term: 'Degradado (Gradiente)', desc: 'Transición suave y gradual de un tono de color a otro, o de un tono oscuro a la luz sin cortes bruscos.' },
+            { term: 'Gesso', desc: 'Imprimación o imprimante blanco que se aplica a los lienzos o tablas para sellar las fibras y preparar la superficie para la pintura.' },
+            { term: 'Lavado (Wash)', desc: 'Técnica de acuarela o acrílico donde la pintura se diluye bastante en agua para cubrir áreas grandes con una tonalidad suave.' },
+            { term: 'Pincel Seco', desc: 'Técnica donde un pincel casi sin agua/medio y poca pintura se arrastra sobre la textura del papel creando un efecto raspado.' },
+            { term: 'Valor Tonal', desc: 'La claridad u oscuridad relativa de un color, independientemente del tinte o matiz del pigmento.' }
+        ];
+
+        // --- RENDERIZAR TÉCNICAS EN GRID ---
+        function renderTechniques(filter = 'all') {
+            const grid = document.getElementById('techniquesGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? techniquesData 
+                : techniquesData.filter(t => t.category === filter);
+
+            filtered.forEach(tech => {
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-pastel-darkCard rounded-3xl p-6 border border-gray-100 dark:border-gray-800 soft-shadow soft-shadow-hover flex flex-col justify-between space-y-4 cursor-pointer transition-all';
+                card.onclick = () => openModal(tech.id);
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl ${tech.colorPastel} dark:bg-gray-800 flex items-center justify-center text-gray-800 dark:text-white text-xl">
+                                <i class="fa-solid ${tech.icon}"></i>
+                            </div>
+                            <span class="text-[11px] font-semibold px-3 py-1 rounded-full ${tech.difficultyBg}">
+                                ${tech.difficulty}
+                            </span>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-gray-800 dark:text-white">${tech.title}</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">${tech.shortDesc}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-gray-100 dark:border-gray-800/60 flex items-center justify-between text-xs font-semibold text-pink-500 hover:text-pink-600">
+                        <span>Ver guía paso a paso</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- RENDERIZAR GLOSARIO ---
+        function renderGlossary(searchTerm = '') {
+            const container = document.getElementById('glossaryList');
+            container.innerHTML = '';
+
+            const termFiltered = glossaryData.filter(item => 
+                item.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                item.desc.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (termFiltered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-8 text-gray-400 text-xs">
+                        No se encontraron términos que coincidan con "${searchTerm}".
+                    </div>
+                `;
+                return;
+            }
+
+            termFiltered.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'bg-white dark:bg-pastel-darkCard rounded-2xl p-4 border border-gray-100 dark:border-gray-800 space-y-1.5 soft-shadow';
+                el.innerHTML = `
+                    <h4 class="font-semibold text-sm text-gray-800 dark:text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-pink-400"></span> ${item.term}
+                    </h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed pl-4">${item.desc}</p>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // --- FILTROS DE TÉCNICAS ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-gray-900', 'text-white', 'dark:bg-white', 'dark:text-gray-900');
+                    b.classList.add('bg-white', 'dark:bg-gray-800', 'text-gray-600', 'dark:text-gray-300');
+                });
+                
+                const target = e.currentTarget;
+                target.classList.add('active', 'bg-gray-900', 'text-white', 'dark:bg-white', 'dark:text-gray-900');
+                target.classList.remove('bg-white', 'dark:bg-gray-800', 'text-gray-600', 'dark:text-gray-300');
+
+                renderTechniques(target.dataset.filter);
+            });
+        });
+
+        // --- BUSCADOR GLOSARIO ---
+        document.getElementById('glossarySearch').addEventListener('input', (e) => {
+            renderGlossary(e.target.value);
+        });
+
+        // --- MODAL DETALLES ---
+        function openModal(id) {
+            const tech = techniquesData.find(t => t.id === id);
+            if (!tech) return;
+
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl ${tech.colorPastel} flex items-center justify-center text-gray-800 text-xl">
+                        <i class="fa-solid ${tech.icon}"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-pink-500 font-bold">Guía Completa</span>
+                        <h2 class="font-serif text-2xl font-bold text-gray-800 dark:text-white">${tech.title}</h2>
+                    </div>
+                </div>
+
+                <!-- Materiales Básicos -->
+                <div class="bg-pastel-cream/70 dark:bg-gray-800/50 p-4 rounded-2xl border border-amber-100 dark:border-gray-700 space-y-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-box-open text-amber-500"></i> Materiales Básicos Recomendados
+                    </h4>
+                    <ul class="text-xs text-gray-600 dark:text-gray-300 grid grid-cols-1 sm:grid-cols-2 gap-1.5 list-disc list-inside">
+                        ${tech.materials.map(m => `<li>${m}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <!-- Paso a paso -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">Paso a paso para tu primera sesión</h4>
+                    <div class="space-y-3">
+                        ${tech.steps.map(s => `
+                            <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl space-y-1">
+                                <h5 class="text-xs font-semibold text-gray-800 dark:text-white">${s.title}</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">${s.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Tip de Oro -->
+                <div class="p-4 rounded-2xl bg-pastel-peach/50 dark:bg-pink-950/30 border border-pastel-peach dark:border-pink-900 flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-500 text-lg mt-0.5"></i>
+                    <div>
+                        <h5 class="text-xs font-bold text-gray-800 dark:text-white">Tip de Oro para Principiantes</h5>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 mt-0.5">${tech.goldTip}</p>
+                    </div>
+                </div>
+
+                <button onclick="closeModal()" class="w-full py-3 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-gray-900 text-xs font-semibold hover:opacity-90 transition-opacity">
+                    ¡Entendido, a practicar!
+                </button>
+            `;
+
+            const modal = document.getElementById('techniqueModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('techniqueModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('techniqueModal').addEventListener('click', (e) => {
+            if (e.target.id === 'techniqueModal') closeModal();
+        });
+
+        // --- LIENZO INTERACTIVO DE PINTURA (CANVAS LOGIC) ---
+        const canvas = document.getElementById('paintCanvas');
+        const ctx = canvas.getContext('2d');
+        const hint = document.getElementById('canvasPlaceholderHint');
+
+        let isDrawing = false;
+        let brushColor = '#E6E6FA';
+        let brushSize = 20;
+        let brushType = 'watercolor'; // watercolor, acrylic, pastel
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            renderTechniques();
+            renderGlossary();
+        });
+        window.addEventListener('resize', resizeCanvas);
+
+        // Ajuste de coordenadas considerando offset del canvas
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            if (hint) hint.style.opacity = '0';
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            const { x, y } = getCoordinates(e);
+
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (brushType === 'watercolor') {
+                // Efecto acuarela: trazo suave traslúcido
+                ctx.globalAlpha = 0.15;
+                ctx.strokeStyle = brushColor;
+                ctx.fillStyle = brushColor;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+            } else if (brushType === 'acrylic') {
+                // Efecto acrílico: opaco y consistente
+                ctx.globalAlpha = 0.9;
+                ctx.strokeStyle = brushColor;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+            } else if (brushType === 'pastel') {
+                // Efecto pastel: textura granulada simulada con pequeñas partículas
+                ctx.globalAlpha = 0.4;
+                ctx.fillStyle = brushColor;
+                
+                const density = 25;
+                for (let i = 0; i < density; i++) {
+                    const offsetX = (Math.random() - 0.5) * brushSize * 1.5;
+                    const offsetY = (Math.random() - 0.5) * brushSize * 1.5;
+                    const dotRadius = Math.random() * 2;
+                    ctx.beginPath();
+                    ctx.arc(x + offsetX, y + offsetY, dotRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Eventos Mouse
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+
+        // Eventos Touch (Móviles)
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Configuración de Paleta de Colores
+        document.querySelectorAll('.color-dot').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.color-dot').forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-purple-400'));
+                e.currentTarget.classList.add('ring-2', 'ring-offset-2', 'ring-purple-400');
+                brushColor = e.currentTarget.dataset.color;
+            });
+        });
+
+        document.getElementById('customColorPicker').addEventListener('input', (e) => {
+            brushColor = e.target.value;
+        });
+
+        // Configuración de Tipos de Pincel
+        const brushBtns = {
+            brushWatercolor: 'watercolor',
+            brushAcrylic: 'acrylic',
+            brushPastel: 'pastel'
+        };
+
+        Object.keys(brushBtns).forEach(id => {
+            document.getElementById(id).addEventListener('click', (e) => {
+                document.querySelectorAll('.brush-type-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-800', 'dark:text-white');
+                    b.classList.add('text-gray-500', 'dark:text-gray-400');
+                });
+                
+                const target = e.currentTarget;
+                target.classList.add('active', 'bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-800', 'dark:text-white');
+                target.classList.remove('text-gray-500', 'dark:text-gray-400');
+
+                brushType = brushBtns[id];
+            });
+        });
+
+        // Tamaño de Pincel
+        document.getElementById('brushSize').addEventListener('input', (e) => {
+            brushSize = e.target.value;
+        });
+
+        // Limpiar Canvas
+        document.getElementById('clearCanvas').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (hint) hint.style.opacity = '1';
+        });
+
+        // --- FORMULARIO COMUNIDAD ---
+        document.getElementById('communityForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('formSuccessMessage');
+            msg.classList.remove('hidden');
+            e.target.reset();
+            setTimeout(() => msg.classList.add('hidden'), 5000);
+        });
+
+        // --- TEMA OSCURO / CLARO ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+    </script>
+</body>
+</html>
